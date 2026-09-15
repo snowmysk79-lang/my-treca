@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MY TRECA</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  background: #f7fbfa;
+  color: #333;
+}
+
+header {
+  background: white;
+  padding: 24px 18px 18px;
+  border-bottom: 1px solid #e5eeee;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 800;
+  color: #36b89b;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: #888;
+  margin-top: 3px;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 18px;
+}
+
+.summary {
+  background: white;
+  border-radius: 18px;
+  padding: 16px;
+  margin-bottom: 18px;
+  box-shadow: 0 3px 15px rgba(0,0,0,0.04);
+}
+
+.summary-number {
+  font-size: 26px;
+  font-weight: 800;
+  color: #36b89b;
+}
+
+.summary-label {
+  font-size: 12px;
+  color: #888;
+}
+
+button {
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.add-button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  background: #36b89b;
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.add-button:active {
+  transform: scale(0.98);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.card {
+  background: white;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+}
+
+.image-wrap {
+  position: relative;
+  aspect-ratio: 2 / 3;
+  background: #edf3f2;
+}
+
+.image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.stock {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 8px;
+  border-radius: 15px;
+  background: #36b89b;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  box-shadow: 0 2px 7px rgba(0,0,0,0.18);
+}
+
+.card-info {
+  padding: 9px;
+}
+
+.card-name {
+  font-weight: 700;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.member {
+  font-size: 11px;
+  color: #888;
+  margin-top: 3px;
+}
+
+.counter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+.counter button {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #edf7f5;
+  color: #36b89b;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.count {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.delete {
+  margin-top: 7px;
+  width: 100%;
+  background: transparent;
+  color: #aaa;
+  font-size: 10px;
+  padding: 3px;
+}
+
+.empty {
+  text-align: center;
+  color: #999;
+  padding: 60px 20px;
+}
+
+.modal-bg {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal {
+  background: white;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 22px;
+  padding: 22px;
+}
+
+.modal h2 {
+  margin-top: 0;
+  font-size: 20px;
+}
+
+label {
+  display: block;
+  font-size: 12px;
+  color: #777;
+  margin-top: 14px;
+  margin-bottom: 5px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #dce7e5;
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
+}
+
+input:focus {
+  border-color: #36b89b;
+}
+
+.photo-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 130px;
+  border: 2px dashed #b9ddd5;
+  border-radius: 14px;
+  color: #36b89b;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+}
+
+.photo-label input {
+  display: none;
+}
+
+.preview {
+  display: none;
+  width: 90px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin: auto;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.cancel {
+  flex: 1;
+  padding: 13px;
+  border-radius: 12px;
+  background: #eee;
+}
+
+.save {
+  flex: 1;
+  padding: 13px;
+  border-radius: 12px;
+  background: #36b89b;
+  color: white;
+  font-weight: bold;
+}
+
+@media (max-width: 500px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="container" style="padding:0;">
+    <div class="logo">🃏 MY TRECA</div>
+    <div class="subtitle">推しトレカ在庫管理</div>
+  </div>
+</header>
+
+<main class="container">
+
+  <div class="summary">
+    <div class="summary-number" id="totalCount">0</div>
+    <div class="summary-label">現在のトレカ総数</div>
+  </div>
+
+  <button class="add-button" onclick="openModal()">
+    ＋ トレカを追加
+  </button>
+
+  <div id="cardGrid" class="grid"></div>
+
+  <div id="empty" class="empty">
+    まだトレカが登録されていません🥹<br>
+    「＋ トレカを追加」から登録してみてね🃏
+  </div>
+
+</main>
+
+<!-- 追加画面 -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+
+    <h2>🃏 トレカを追加</h2>
+
+    <label>カード写真</label>
+
+    <label class="photo-label">
+      <span id="photoText">📸 写真を選択</span>
+      <input type="file" accept="image/*" id="photoInput" onchange="previewPhoto(event)">
+    </label>
+
+    <img id="preview" class="preview">
+
+    <label>カード名</label>
+    <input id="nameInput" placeholder="例：A-001">
+
+    <label>メンバー</label>
+    <input id="memberInput" placeholder="例：○○くん">
+
+    <label>所持枚数</label>
+    <input id="countInput" type="number" min="0" value="1">
+
+    <div class="modal-buttons">
+      <button class="cancel" onclick="closeModal()">キャンセル</button>
+      <button class="save" onclick="addCard()">追加する</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+
+let cards = JSON.parse(localStorage.getItem("myTrecaCards") || "[]");
+
+function save() {
+  localStorage.setItem("myTrecaCards", JSON.stringify(cards));
+}
+
+function render() {
+
+  const grid = document.getElementById("cardGrid");
+  const empty = document.getElementById("empty");
+
+  grid.innerHTML = "";
+
+  if (cards.length === 0) {
+    empty.style.display = "block";
+  } else {
+    empty.style.display = "none";
+  }
+
+  let total = 0;
+
+  cards.forEach((card, index) => {
+
+    total += Number(card.count);
+
+    const div = document.createElement("div");
+    div.className = "card";
+
+    div.innerHTML = `
+      <div class="image-wrap">
+        <img src="${card.image}">
+        <div class="stock">${card.count}</div>
+      </div>
+
+      <div class="card-info">
+
+        <div class="card-name">${escapeHtml(card.name)}</div>
+
+        <div class="member">
+          ${escapeHtml(card.member)}
+        </div>
+
+        <div class="counter">
+
+          <button onclick="changeCount(${index}, -1)">−</button>
+
+          <span class="count">${card.count}</span>
+
+          <button onclick="changeCount(${index}, 1)">＋</button>
+
+        </div>
+
+        <button class="delete" onclick="deleteCard(${index})">
+          削除
+        </button>
+
+      </div>
+    `;
+
+    grid.appendChild(div);
+  });
+
+  document.getElementById("totalCount").textContent = total;
+}
+
+function changeCount(index, amount) {
+
+  cards[index].count = Math.max(
+    0,
+    Number(cards[index].count) + amount
+  );
+
+  save();
+  render();
+}
+
+function deleteCard(index) {
+
+  if (!confirm("このトレカを削除しますか？")) return;
+
+  cards.splice(index, 1);
+
+  save();
+  render();
+}
+
+function openModal() {
+
+  document.getElementById("modal").style.display = "flex";
+
+}
+
+function closeModal() {
+
+  document.getElementById("modal").style.display = "none";
+
+  document.getElementById("photoInput").value = "";
+  document.getElementById("nameInput").value = "";
+  document.getElementById("memberInput").value = "";
+  document.getElementById("countInput").value = "1";
+
+  document.getElementById("preview").style.display = "none";
+  document.getElementById("photoText").style.display = "block";
+
+}
+
+function previewPhoto(event) {
+
+  const file = event.target.files[0];
+
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+
+    const preview = document.getElementById("preview");
+
+    preview.src = e.target.result;
+    preview.style.display = "block";
+
+    document.getElementById("photoText").style.display = "none";
+
+  };
+
+  reader.readAsDataURL(file);
+}
+
+function addCard() {
+
+  const file = document.getElementById("photoInput").files[0];
+
+  if (!file) {
+    alert("カード写真を選択してください📸");
+    return;
+  }
+
+  const name = document.getElementById("nameInput").value || "カード";
+  const member = document.getElementById("memberInput").value || "";
+  const count = Number(document.getElementById("countInput").value) || 0;
+
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+
+    cards.push({
+      id: Date.now(),
+      image: e.target.result,
+      name: name,
+      member: member,
+      count: count
+    });
+
+    save();
+    render();
+    closeModal();
+
+  };
+
+  reader.readAsDataURL(file);
+}
+
+function escapeHtml(text) {
+
+  const div = document.createElement("div");
+  div.textContent = text;
+
+  return div.innerHTML;
+}
+
+render();
+
+</script>
+
+</body>
+</html>
