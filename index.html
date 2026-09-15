@@ -1,500 +1,620 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MY TRECA</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MY TRECA</title>
 
-<style>
-* {
-  box-sizing: border-box;
-}
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-  background: #f7fbfa;
-  color: #333;
-}
+    body {
+      margin: 0;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Hiragino Sans",
+        "Yu Gothic",
+        sans-serif;
+      background: #fff7fa;
+      color: #555;
+    }
 
-header {
-  background: white;
-  padding: 24px 18px 18px;
-  border-bottom: 1px solid #e5eeee;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
+    header {
+      background: #f3a6bd;
+      color: white;
+      padding: 18px 16px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
 
-.logo {
-  font-size: 24px;
-  font-weight: 800;
-  color: #f3a6bd;
-}
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 800;
+    }
 
-.subtitle {
-  font-size: 12px;
-  color: #888;
-  margin-top: 3px;
-}
+    header p {
+      margin: 4px 0 0;
+      font-size: 12px;
+      opacity: 0.95;
+    }
 
-.container {
-  max-width: 900px;
-  margin: auto;
-  padding: 18px;
-}
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 16px;
+    }
 
-.summary {
-  background: white;
-  border-radius: 18px;
-  padding: 16px;
-  margin-bottom: 18px;
-  box-shadow: 0 3px 15px rgba(0,0,0,0.04);
-}
+    .summary {
+      background: white;
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      text-align: center;
+    }
 
-.summary-number {
-  font-size: 26px;
-  font-weight: 800;
-  color: #f3a6bd;
-}
+    .summary-title {
+      font-size: 12px;
+      color: #999;
+    }
 
-.summary-label {
-  font-size: 12px;
-  color: #888;
-}
+    .summary-count {
+      font-size: 26px;
+      font-weight: 800;
+      color: #f3a6bd;
+      margin-top: 2px;
+    }
 
-button {
-  border: none;
-  cursor: pointer;
-  font-family: inherit;
-}
+    .top-actions {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
 
-.add-button {
-  width: 100%;
-  padding: 14px;
-  border-radius: 14px;
-  background: #f3a6bd;
-  color: white;
-  font-size: 15px;
-  font-weight: 700;
-  margin-bottom: 14px;
-}
+    button {
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
 
-.add-button:active {
-  transform: scale(0.98);
-}
+    .add-button {
+      flex: 1;
+      background: #f3a6bd;
+      color: white;
+      border-radius: 14px;
+      padding: 13px 10px;
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: 0 3px 8px rgba(243,166,189,0.3);
+    }
 
-/* 並び替え */
+    .filter-area {
+      background: white;
+      border-radius: 16px;
+      padding: 12px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
 
-.sort-area {
-  background: white;
-  padding: 12px 14px;
-  border-radius: 14px;
-  margin-bottom: 18px;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.04);
-}
+    .filter-row {
+      display: flex;
+      gap: 8px;
+    }
 
-.sort-title {
-  font-size: 12px;
-  color: #777;
-  margin-bottom: 6px;
-}
+    .filter-box {
+      flex: 1;
+    }
 
-.sort-select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #dce7e5;
-  border-radius: 10px;
-  background: white;
-  font-size: 14px;
-  outline: none;
-}
+    .filter-box label {
+      display: block;
+      font-size: 11px;
+      color: #999;
+      margin-bottom: 5px;
+    }
 
-.sort-select:focus {
-  border-color: #f3a6bd;
-}
+    select,
+    input {
+      width: 100%;
+      border: 1px solid #ead7dd;
+      border-radius: 10px;
+      background: white;
+      color: #555;
+      padding: 10px;
+      font-size: 14px;
+      outline: none;
+    }
 
-/* カード一覧 */
+    select:focus,
+    input:focus {
+      border-color: #f3a6bd;
+    }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-}
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
 
-.card {
-  background: white;
-  border-radius: 14px;
-  overflow: hidden;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.06);
-  cursor: pointer;
-}
+    .card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
 
-.image-wrap {
-  position: relative;
-  aspect-ratio: 2 / 3;
-  background: #edf3f2;
-}
+    .card:active {
+      transform: scale(0.97);
+    }
 
-.image-wrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  pointer-events: none;
-}
+    .card-image-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 0.7;
+      background: #f7eef1;
+      overflow: hidden;
+    }
 
-.stock {
-  position: absolute;
-  top: 7px;
-  right: 7px;
-  min-width: 30px;
-  height: 30px;
-  padding: 0 8px;
-  border-radius: 15px;
-  background: #f3a6bd;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  font-weight: 800;
-  box-shadow: 0 2px 7px rgba(0,0,0,0.18);
-}
+    .card-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
 
-.card-info {
-  padding: 9px;
-}
+    .stock-badge {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      min-width: 25px;
+      height: 25px;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: #f3a6bd;
+      color: white;
+      font-size: 12px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    }
 
-.card-name {
-  font-weight: 700;
-  font-size: 13px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+    .card-info {
+      padding: 8px;
+    }
 
-.card-shot {
-  font-size: 11px;
-  color: #888;
-  margin-top: 3px;
-}
+    .card-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: #555;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-.member {
-  font-size: 11px;
-  color: #888;
-  margin-top: 3px;
-}
+    .card-detail {
+      font-size: 10px;
+      color: #999;
+      margin-top: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-.counter {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 8px;
-}
+    .empty {
+      grid-column: 1 / -1;
+      background: white;
+      border-radius: 18px;
+      padding: 45px 20px;
+      text-align: center;
+      color: #aaa;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
 
-.counter button {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: #edf7f5;
-  color: #f3a6bd;
-  font-size: 18px;
-  font-weight: bold;
-}
+    .empty-icon {
+      font-size: 42px;
+      margin-bottom: 10px;
+    }
 
-.count {
-  font-size: 14px;
-  font-weight: 800;
-}
+    /* modal */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0,0,0,0.45);
+      padding: 20px;
+      overflow-y: auto;
+    }
 
-.delete {
-  margin-top: 7px;
-  width: 100%;
-  background: transparent;
-  color: #aaa;
-  font-size: 10px;
-  padding: 3px;
-}
+    .modal.show {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-.empty {
-  text-align: center;
-  color: #999;
-  padding: 60px 20px;
-}
+    .modal-content {
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    }
 
-/* モーダル */
+    .modal-title {
+      margin: 0 0 16px;
+      text-align: center;
+      color: #555;
+      font-size: 18px;
+      font-weight: 800;
+    }
 
-.modal-bg {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.45);
-  z-index: 100;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
+    .detail-image {
+      width: 100%;
+      max-height: 420px;
+      object-fit: contain;
+      background: #f8eef1;
+      border-radius: 14px;
+      display: block;
+      margin-bottom: 16px;
+    }
 
-.modal {
-  background: white;
-  width: 100%;
-  max-width: 420px;
-  max-height: 90vh;
-  overflow-y: auto;
-  border-radius: 22px;
-  padding: 22px;
-}
+    .detail-info {
+      background: #fff7fa;
+      border-radius: 14px;
+      padding: 13px;
+      margin-bottom: 14px;
+    }
 
-.modal h2 {
-  margin-top: 0;
-  font-size: 20px;
-}
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 6px 0;
+      border-bottom: 1px solid #f0dfe5;
+      font-size: 13px;
+    }
 
-.detail-image {
-  width: 120px;
-  height: 180px;
-  object-fit: cover;
-  display: block;
-  margin: 0 auto 18px;
-  border-radius: 10px;
-}
+    .detail-row:last-child {
+      border-bottom: none;
+    }
 
-.detail-name {
-  text-align: center;
-  font-size: 20px;
-  font-weight: 800;
-}
+    .detail-label {
+      color: #999;
+      flex-shrink: 0;
+    }
 
-.detail-shot,
-.detail-member {
-  text-align: center;
-  color: #888;
-  font-size: 13px;
-  margin-top: 5px;
-}
+    .detail-value {
+      color: #555;
+      font-weight: 700;
+      text-align: right;
+      word-break: break-word;
+    }
 
-.detail-stock {
-  text-align: center;
-  margin: 15px 0;
-}
+    .detail-count-area {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      margin: 18px 0;
+    }
 
-.detail-stock-number {
-  font-size: 30px;
-  font-weight: 800;
-  color: #f3a6bd;
-}
+    .count-button {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #f8dce5;
+      color: #d87d9b;
+      font-size: 24px;
+      font-weight: 700;
+    }
 
-.detail-stock-label {
-  font-size: 12px;
-  color: #888;
-}
+    .detail-count {
+      min-width: 50px;
+      text-align: center;
+      font-size: 25px;
+      font-weight: 800;
+      color: #f3a6bd;
+    }
 
-.detail-buttons {
-  display: flex;
-  gap: 8px;
-  margin-top: 20px;
-}
+    .modal-buttons {
+      display: flex;
+      gap: 8px;
+    }
 
-.edit-button {
-  flex: 1;
-  padding: 13px;
-  border-radius: 12px;
-  background: #f3a6bd;
-  color: white;
-  font-weight: bold;
-}
+    .modal-button {
+      flex: 1;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+    }
 
-.close-button {
-  flex: 1;
-  padding: 13px;
-  border-radius: 12px;
-  background: #eee;
-}
+    .button-close {
+      background: #eee;
+      color: #777;
+    }
 
-/* 入力 */
+    .button-edit {
+      background: #f3a6bd;
+      color: white;
+    }
 
-label {
-  display: block;
-  font-size: 12px;
-  color: #777;
-  margin-top: 14px;
-  margin-bottom: 5px;
-}
+    .button-delete {
+      width: 100%;
+      margin-top: 8px;
+      background: #fff0f0;
+      color: #d96b6b;
+      padding: 11px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+    }
 
-input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #dce7e5;
-  border-radius: 10px;
-  font-size: 14px;
-  outline: none;
-}
+    /* form */
+    .form-group {
+      margin-bottom: 14px;
+    }
 
-input:focus {
-  border-color: #f3a6bd;
-}
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #777;
+      margin-bottom: 6px;
+    }
 
-.photo-label {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 130px;
-  border: 2px dashed #b9ddd5;
-  border-radius: 14px;
-  color: #f3a6bd;
-  font-weight: 700;
-  cursor: pointer;
-  text-align: center;
-}
+    .select-add-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
 
-.photo-label input {
-  display: none;
-}
+    .select-add-row select {
+      flex: 1;
+    }
 
-.preview {
-  display: none;
-  width: 90px;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin: auto;
-}
+    .small-add-button {
+      flex-shrink: 0;
+      background: #f8dce5;
+      color: #c96e8b;
+      border-radius: 10px;
+      padding: 9px 10px;
+      font-size: 12px;
+      font-weight: 700;
+    }
 
-.modal-buttons {
-  display: flex;
-  gap: 8px;
-  margin-top: 20px;
-}
+    .photo-area {
+      border: 2px dashed #efd4dd;
+      border-radius: 14px;
+      padding: 14px;
+      text-align: center;
+      background: #fffafb;
+    }
 
-.cancel {
-  flex: 1;
-  padding: 13px;
-  border-radius: 12px;
-  background: #eee;
-}
+    .photo-area input {
+      border: none;
+      padding: 0;
+      background: transparent;
+    }
 
-.save {
-  flex: 1;
-  padding: 13px;
-  border-radius: 12px;
-  background: #f3a6bd;
-  color: white;
-  font-weight: bold;
-}
+    .photo-preview {
+      width: 130px;
+      max-height: 180px;
+      object-fit: contain;
+      margin: 10px auto 0;
+      border-radius: 10px;
+      display: none;
+    }
 
-@media (max-width: 500px) {
-  .grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-</style>
+    .save-button {
+      width: 100%;
+      background: #f3a6bd;
+      color: white;
+      padding: 13px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 800;
+      margin-top: 5px;
+    }
+
+    .cancel-button {
+      width: 100%;
+      background: #eee;
+      color: #777;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      margin-top: 8px;
+    }
+
+    .help-text {
+      font-size: 10px;
+      color: #aaa;
+      margin-top: 5px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 500px) {
+      main {
+        padding: 12px;
+      }
+
+      .grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+      }
+
+      .card-info {
+        padding: 6px;
+      }
+
+      .card-name {
+        font-size: 10px;
+      }
+
+      .card-detail {
+        font-size: 9px;
+      }
+
+      .stock-badge {
+        top: 4px;
+        right: 4px;
+        min-width: 22px;
+        height: 22px;
+        font-size: 10px;
+      }
+
+      .filter-row {
+        flex-direction: column;
+      }
+
+      .modal {
+        padding: 12px;
+      }
+
+      .modal-content {
+        padding: 16px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
 <header>
-  <div class="container" style="padding:0;">
-    <div class="logo">🃏 MY TRECA</div>
-    <div class="subtitle">推しトレカ在庫管理</div>
-  </div>
+  <h1>🃏 MY TRECA</h1>
+  <p>推しトレカ在庫管理</p>
 </header>
 
-<main class="container">
+<main>
 
   <div class="summary">
-    <div class="summary-number" id="totalCount">0</div>
-    <div class="summary-label">現在のトレカ総数</div>
+    <div class="summary-title">トレカ総数</div>
+    <div class="summary-count" id="totalCount">0</div>
   </div>
 
-  <button class="add-button" onclick="openAddModal()">
-    ＋ トレカを追加
-  </button>
+  <div class="top-actions">
+    <button class="add-button" onclick="openAddModal()">
+      ＋ トレカを追加
+    </button>
+  </div>
 
-  <div class="sort-area">
+  <div class="filter-area">
 
-    <div class="sort-title">
-      並び替え
+    <div class="filter-row">
+
+      <div class="filter-box">
+        <label>👤 メンバーで絞り込み</label>
+        <select id="memberFilter" onchange="changeMemberFilter()">
+          <option value="all">全メンバー</option>
+        </select>
+      </div>
+
+      <div class="filter-box">
+        <label>↕️ 並び替え</label>
+        <select id="sortSelect" onchange="changeSort()">
+          <option value="registered">登録順</option>
+          <option value="name">名前順</option>
+          <option value="member">メンバー順</option>
+          <option value="count">所持枚数が多い順</option>
+        </select>
+      </div>
+
     </div>
 
-    <select
-      id="sortSelect"
-      class="sort-select"
-      onchange="changeSort()"
-    >
-
-      <option value="registered">
-        登録順
-      </option>
-
-      <option value="name">
-        名前順
-      </option>
-
-      <option value="member">
-        メンバー順
-      </option>
-
-      <option value="count">
-        所持枚数が多い順
-      </option>
-
-    </select>
-
   </div>
 
-  <div id="cardGrid" class="grid"></div>
-
-  <div id="empty" class="empty">
-    まだトレカが登録されていません🥹<br>
-    「＋ トレカを追加」から登録してみてね🃏
-  </div>
+  <div class="grid" id="cardGrid"></div>
 
 </main>
 
 
-<!-- 詳細画面 -->
+<!-- 詳細モーダル -->
 
-<div class="modal-bg" id="detailModal">
+<div class="modal" id="detailModal">
 
-  <div class="modal">
+  <div class="modal-content">
 
-    <h2>🃏 トレカ詳細</h2>
+    <h2 class="modal-title">🃏 トレカ詳細</h2>
 
-    <img id="detailImage" class="detail-image">
+    <img
+      id="detailImage"
+      class="detail-image"
+      src=""
+      alt="トレカ"
+    >
 
-    <div id="detailName" class="detail-name"></div>
+    <div class="detail-info">
 
-    <div id="detailShot" class="detail-shot"></div>
-
-    <div id="detailMember" class="detail-member"></div>
-
-    <div class="detail-stock">
-
-      <div
-        id="detailStock"
-        class="detail-stock-number"
-      >
-        0
+      <div class="detail-row">
+        <span class="detail-label">カード名</span>
+        <span class="detail-value" id="detailName"></span>
       </div>
 
-      <div class="detail-stock-label">
-        所持枚数
+      <div class="detail-row">
+        <span class="detail-label">写り</span>
+        <span class="detail-value" id="detailShot"></span>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">メンバー</span>
+        <span class="detail-value" id="detailMember"></span>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">衣装</span>
+        <span class="detail-value" id="detailCostume"></span>
       </div>
 
     </div>
 
-    <div class="detail-buttons">
+    <div class="detail-count-area">
 
       <button
-        class="close-button"
+        class="count-button"
+        onclick="changeDetailCount(-1)"
+      >
+        −
+      </button>
+
+      <div
+        class="detail-count"
+        id="detailCount"
+      >
+        0
+      </div>
+
+      <button
+        class="count-button"
+        onclick="changeDetailCount(1)"
+      >
+        ＋
+      </button>
+
+    </div>
+
+    <div class="modal-buttons">
+
+      <button
+        class="modal-button button-close"
         onclick="closeDetailModal()"
       >
         閉じる
       </button>
 
       <button
-        class="edit-button"
+        class="modal-button button-edit"
         onclick="openEditModal()"
       >
         ✏️ 編集
@@ -502,90 +622,171 @@ input:focus {
 
     </div>
 
+    <button
+      class="button-delete"
+      onclick="deleteSelectedCard()"
+    >
+      🗑️ このトレカを削除
+    </button>
+
   </div>
 
 </div>
 
 
-<!-- 追加・編集画面 -->
+<!-- 追加・編集モーダル -->
 
-<div class="modal-bg" id="editModal">
+<div class="modal" id="editModal">
 
-  <div class="modal">
+  <div class="modal-content">
 
-    <h2 id="editTitle">
+    <h2 class="modal-title" id="editModalTitle">
       🃏 トレカを追加
     </h2>
 
-    <label>カード写真</label>
+    <div class="form-group">
 
-    <label class="photo-label">
+      <label>📛 カード名</label>
 
-      <span id="photoText">
-        📸 写真を選択
-      </span>
+      <div class="select-add-row">
 
-      <input
-        type="file"
-        accept="image/*"
-        id="photoInput"
-        onchange="previewPhoto(event)"
-      >
+        <select id="nameInput">
+          <option value="">カード名を選択</option>
+        </select>
 
-    </label>
+        <button
+          type="button"
+          class="small-add-button"
+          onclick="addMaster('names')"
+        >
+          ＋追加
+        </button>
 
-    <img
-      id="preview"
-      class="preview"
-    >
-
-    <label>カード名</label>
-
-    <input
-      id="nameInput"
-      placeholder="例：A-001"
-    >
-
-    <label>写り</label>
-
-    <input
-      id="shotInput"
-      placeholder="例：アップ"
-    >
-
-    <label>メンバー</label>
-
-    <input
-      id="memberInput"
-      placeholder="例：○○くん"
-    >
-
-    <label>所持枚数</label>
-
-    <input
-      id="countInput"
-      type="number"
-      min="0"
-      value="1"
-    >
-
-    <div class="modal-buttons">
-
-      <button
-        class="cancel"
-        onclick="closeEditModal()"
-      >
-        キャンセル
-      </button>
-
-      <button
-        class="save"
-        onclick="saveCard()"
-      >
-        保存する
-      </button>
+      </div>
 
     </div>
+
+
+    <div class="form-group">
+
+      <label>👤 メンバー</label>
+
+      <div class="select-add-row">
+
+        <select id="memberInput">
+          <option value="">メンバーを選択</option>
+        </select>
+
+        <button
+          type="button"
+          class="small-add-button"
+          onclick="addMaster('members')"
+        >
+          ＋追加
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label>👗 衣装</label>
+
+      <div class="select-add-row">
+
+        <select id="costumeInput">
+          <option value="">衣装を選択</option>
+        </select>
+
+        <button
+          type="button"
+          class="small-add-button"
+          onclick="addMaster('costumes')"
+        >
+          ＋追加
+        </button>
+
+      </div>
+
+      <div class="help-text">
+        新しい衣装が出たら「＋追加」から登録できます♡
+      </div>
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label>📸 写り</label>
+
+      <select id="shotInput">
+        <option value="ヒキ">ヒキ</option>
+        <option value="ヨリ">ヨリ</option>
+        <option value="自撮り1">自撮り1</option>
+        <option value="自撮り2">自撮り2</option>
+      </select>
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label>🔢 所持枚数</label>
+
+      <input
+        type="number"
+        id="countInput"
+        min="0"
+        value="1"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label>📷 写真</label>
+
+      <div class="photo-area">
+
+        <input
+          type="file"
+          id="photoInput"
+          accept="image/*"
+          onchange="previewPhoto()"
+        >
+
+        <img
+          id="photoPreview"
+          class="photo-preview"
+          src=""
+          alt="プレビュー"
+        >
+
+        <div class="help-text">
+          編集時は写真を選び直さなければ現在の写真をそのまま使います
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <button
+      class="save-button"
+      onclick="saveCard()"
+    >
+      💾 保存する
+    </button>
+
+    <button
+      class="cancel-button"
+      onclick="closeEditModal()"
+    >
+      キャンセル
+    </button>
 
   </div>
 
@@ -594,677 +795,1345 @@ input:focus {
 
 <script>
 
-/* データ */
+  /* =========================
+     データ
+  ========================= */
 
-let cards = JSON.parse(
-  localStorage.getItem("myTrecaCards") || "[]"
-);
+  const STORAGE_KEY = "myTrecaCards_v2";
+  const MASTER_KEY = "myTrecaMasters_v2";
 
-let selectedCardId = null;
+  const DEFAULT_COSTUMES = [
+    "浴衣",
+    "47白衣装",
+    "MF",
+    "MFcb"
+  ];
 
-let editingCardId = null;
+  const SHOTS = [
+    "ヒキ",
+    "ヨリ",
+    "自撮り1",
+    "自撮り2"
+  ];
 
-let currentSort = "registered";
 
+  function loadCards() {
 
-/* 保存 */
+    try {
 
-function save() {
+      const data = localStorage.getItem(STORAGE_KEY);
 
-  try {
+      if (!data) {
+        return [];
+      }
 
-    localStorage.setItem(
-      "myTrecaCards",
-      JSON.stringify(cards)
-    );
+      const parsed = JSON.parse(data);
 
-    return true;
+      return Array.isArray(parsed) ? parsed : [];
 
-  } catch (error) {
+    } catch (error) {
 
-    alert(
-      "保存できませんでした😭\n" +
-      error.message
-    );
+      console.error(error);
 
-    return false;
+      return [];
+
+    }
+
   }
-}
 
 
-/* 並び替え */
+  function loadMasters() {
 
-function changeSort() {
+    try {
 
-  currentSort =
-    document.getElementById(
-      "sortSelect"
-    ).value;
+      const data = localStorage.getItem(MASTER_KEY);
 
-  render();
-}
+      if (!data) {
+
+        return {
+          names: [],
+          members: [],
+          costumes: [...DEFAULT_COSTUMES]
+        };
+
+      }
+
+      const parsed = JSON.parse(data);
+
+      return {
+        names: Array.isArray(parsed.names)
+          ? parsed.names
+          : [],
+
+        members: Array.isArray(parsed.members)
+          ? parsed.members
+          : [],
+
+        costumes: Array.isArray(parsed.costumes)
+          ? parsed.costumes
+          : [...DEFAULT_COSTUMES]
+      };
+
+    } catch (error) {
+
+      console.error(error);
+
+      return {
+        names: [],
+        members: [],
+        costumes: [...DEFAULT_COSTUMES]
+      };
+
+    }
+
+  }
 
 
-function getSortedCards() {
+  let cards = loadCards();
 
-  const sorted = [...cards];
+  let masters = loadMasters();
 
-  if (currentSort === "name") {
+  let selectedCardId = null;
 
-    sorted.sort(function(a, b) {
+  let editingCardId = null;
 
-      return (a.name || "").localeCompare(
-        b.name || "",
-        "ja"
+  let currentSort = "registered";
+
+  let memberFilter = "all";
+
+
+  /* =========================
+     保存
+  ========================= */
+
+  function save() {
+
+    try {
+
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(cards)
       );
 
-    });
+      return true;
 
-  } else if (currentSort === "member") {
+    } catch (error) {
 
-    sorted.sort(function(a, b) {
-
-      return (a.member || "").localeCompare(
-        b.member || "",
-        "ja"
+      alert(
+        "保存できませんでした😭\n" +
+        error.message
       );
 
-    });
+      return false;
 
-  } else if (currentSort === "count") {
-
-    sorted.sort(function(a, b) {
-
-      return Number(b.count) - Number(a.count);
-
-    });
-
-  } else {
-
-    sorted.sort(function(a, b) {
-
-      return Number(a.id) - Number(b.id);
-
-    });
+    }
 
   }
 
-  return sorted;
-}
 
+  function saveMasters() {
 
-/* 一覧表示 */
+    try {
 
-function render() {
+      localStorage.setItem(
+        MASTER_KEY,
+        JSON.stringify(masters)
+      );
 
-  const grid =
-    document.getElementById("cardGrid");
+      return true;
 
-  const empty =
-    document.getElementById("empty");
+    } catch (error) {
 
-  grid.innerHTML = "";
+      alert(
+        "候補を保存できませんでした😭\n" +
+        error.message
+      );
 
-  if (cards.length === 0) {
+      return false;
 
-    empty.style.display = "block";
-
-  } else {
-
-    empty.style.display = "none";
+    }
 
   }
 
-  let total = 0;
 
-  cards.forEach(function(card) {
+  /* =========================
+     マスター整理
+  ========================= */
 
-    total += Number(card.count);
+  function uniquePush(array, value) {
 
-  });
+    if (!value) {
+      return;
+    }
 
+    if (!array.includes(value)) {
+      array.push(value);
+    }
 
-  const sortedCards =
-    getSortedCards();
-
-
-  sortedCards.forEach(function(card) {
-
-    const div =
-      document.createElement("div");
-
-    div.className = "card";
+  }
 
 
-    div.onclick = function() {
+  function initializeMasters() {
 
-      openDetailModal(card.id);
+    cards.forEach(card => {
 
+      uniquePush(masters.names, card.name);
+
+      uniquePush(masters.members, card.member);
+
+      uniquePush(masters.costumes, card.costume);
+
+    });
+
+
+    DEFAULT_COSTUMES.forEach(costume => {
+
+      uniquePush(masters.costumes, costume);
+
+    });
+
+
+    saveMasters();
+
+  }
+
+
+  initializeMasters();
+
+
+  /* =========================
+     マスター追加
+  ========================= */
+
+  function addMaster(type) {
+
+    const labels = {
+      names: "カード名",
+      members: "メンバー名",
+      costumes: "衣装"
     };
 
+    const label = labels[type];
 
-    div.innerHTML = `
+    const value = prompt(
+      `新しい${label}を入力してください♡`
+    );
 
-      <div class="image-wrap">
+    if (value === null) {
+      return;
+    }
 
-        <img src="${card.image}">
+    const trimmed = value.trim();
 
-        <div class="stock">
-          ${card.count}
-        </div>
+    if (!trimmed) {
 
-      </div>
+      alert(
+        `${label}を入力してください🥺`
+      );
 
-      <div class="card-info">
+      return;
 
-        <div class="card-name">
-          ${escapeHtml(card.name)}
-        </div>
-
-        <div class="card-shot">
-          ${escapeHtml(card.shot || "")}
-        </div>
-
-        <div class="member">
-          ${escapeHtml(card.member || "")}
-        </div>
-
-        <div class="counter">
-
-          <button
-            onclick="
-              event.stopPropagation();
-              changeCount('${card.id}', -1);
-            "
-          >
-            −
-          </button>
-
-          <span class="count">
-            ${card.count}
-          </span>
-
-          <button
-            onclick="
-              event.stopPropagation();
-              changeCount('${card.id}', 1);
-            "
-          >
-            ＋
-          </button>
-
-        </div>
-
-        <button
-          class="delete"
-          onclick="
-            event.stopPropagation();
-            deleteCard('${card.id}');
-          "
-        >
-          削除
-        </button>
-
-      </div>
-
-    `;
-
-    grid.appendChild(div);
-
-  });
+    }
 
 
-  document.getElementById(
-    "totalCount"
-  ).textContent = total;
-}
+    if (masters[type].includes(trimmed)) {
+
+      alert(
+        `「${trimmed}」はすでに登録されています！`
+      );
+
+      return;
+
+    }
 
 
-/* IDからカードを探す */
+    const backup = [...masters[type]];
 
-function findCard(id) {
+    masters[type].push(trimmed);
 
-  return cards.find(function(card) {
+    if (!saveMasters()) {
 
-    return String(card.id) === String(id);
+      masters[type] = backup;
 
-  });
+      return;
 
-}
+    }
 
 
-/* 枚数変更 */
+    refreshAllSelects(trimmed, type);
 
-function changeCount(id, amount) {
-
-  const card =
-    findCard(id);
-
-  if (!card) {
-    return;
   }
 
-  card.count = Math.max(
-    0,
-    Number(card.count) + amount
-  );
 
-  save();
+  /* =========================
+     プルダウン
+  ========================= */
 
-  render();
-}
-
-
-/* 削除 */
-
-function deleteCard(id) {
-
-  const card =
-    findCard(id);
-
-  if (!card) {
-    return;
-  }
-
-  if (
-    !confirm(
-      "このトレカを削除しますか？"
-    )
+  function setSelectOptions(
+    selectId,
+    values,
+    placeholder,
+    selectedValue = ""
   ) {
-    return;
-  }
 
-  cards =
-    cards.filter(function(item) {
+    const select = document.getElementById(selectId);
 
-      return String(item.id) !== String(id);
+    if (!select) {
+      return;
+    }
+
+
+    select.innerHTML = "";
+
+
+    const placeholderOption =
+      document.createElement("option");
+
+    placeholderOption.value = "";
+
+    placeholderOption.textContent = placeholder;
+
+    select.appendChild(placeholderOption);
+
+
+    values.forEach(value => {
+
+      if (!value) {
+        return;
+      }
+
+      const option =
+        document.createElement("option");
+
+      option.value = value;
+
+      option.textContent = value;
+
+      select.appendChild(option);
 
     });
 
-  save();
 
-  render();
-}
+    select.value = selectedValue;
 
-
-/* 詳細画面 */
-
-function openDetailModal(id) {
-
-  const card =
-    findCard(id);
-
-  if (!card) {
-    return;
   }
 
-  selectedCardId =
-    card.id;
 
-  document.getElementById(
-    "detailImage"
-  ).src = card.image;
+  function refreshEditSelects(
+    selectedName = "",
+    selectedMember = "",
+    selectedCostume = ""
+  ) {
 
-  document.getElementById(
-    "detailName"
-  ).textContent = card.name;
-
-  document.getElementById(
-    "detailShot"
-  ).textContent =
-    card.shot || "";
-
-  document.getElementById(
-    "detailMember"
-  ).textContent =
-    card.member || "";
-
-  document.getElementById(
-    "detailStock"
-  ).textContent =
-    card.count;
-
-  document.getElementById(
-    "detailModal"
-  ).style.display = "flex";
-}
+    setSelectOptions(
+      "nameInput",
+      masters.names,
+      "カード名を選択",
+      selectedName
+    );
 
 
-function closeDetailModal() {
+    setSelectOptions(
+      "memberInput",
+      masters.members,
+      "メンバーを選択",
+      selectedMember
+    );
 
-  document.getElementById(
-    "detailModal"
-  ).style.display = "none";
-}
 
+    setSelectOptions(
+      "costumeInput",
+      masters.costumes,
+      "衣装を選択",
+      selectedCostume
+    );
 
-/* 編集画面 */
-
-function openEditModal() {
-
-  if (selectedCardId === null) {
-    return;
   }
 
-  const card =
-    findCard(selectedCardId);
 
-  if (!card) {
-    return;
+  function refreshAllSelects(
+    newlyAddedValue = "",
+    type = ""
+  ) {
+
+    const currentName =
+      document.getElementById("nameInput")?.value || "";
+
+    const currentMember =
+      document.getElementById("memberInput")?.value || "";
+
+    const currentCostume =
+      document.getElementById("costumeInput")?.value || "";
+
+
+    refreshEditSelects(
+      type === "names"
+        ? newlyAddedValue
+        : currentName,
+
+      type === "members"
+        ? newlyAddedValue
+        : currentMember,
+
+      type === "costumes"
+        ? newlyAddedValue
+        : currentCostume
+    );
+
+
+    renderMemberFilter();
+
   }
 
-  editingCardId =
-    card.id;
 
-  document.getElementById(
-    "editTitle"
-  ).textContent =
-    "✏️ トレカを編集";
+  function renderMemberFilter() {
 
-  document.getElementById(
-    "nameInput"
-  ).value =
-    card.name || "";
+    const select =
+      document.getElementById("memberFilter");
 
-  document.getElementById(
-    "shotInput"
-  ).value =
-    card.shot || "";
-
-  document.getElementById(
-    "memberInput"
-  ).value =
-    card.member || "";
-
-  document.getElementById(
-    "countInput"
-  ).value =
-    card.count;
-
-  document.getElementById(
-    "photoInput"
-  ).value = "";
-
-  document.getElementById(
-    "preview"
-  ).style.display = "none";
-
-  document.getElementById(
-    "photoText"
-  ).style.display = "block";
-
-  document.getElementById(
-    "photoText"
-  ).textContent =
-    "📸 写真を変更する場合は選択";
-
-  closeDetailModal();
-
-  document.getElementById(
-    "editModal"
-  ).style.display = "flex";
-}
+    if (!select) {
+      return;
+    }
 
 
-/* 新規追加画面 */
-
-function openAddModal() {
-
-  editingCardId = null;
-
-  document.getElementById(
-    "editTitle"
-  ).textContent =
-    "🃏 トレカを追加";
-
-  document.getElementById(
-    "photoInput"
-  ).value = "";
-
-  document.getElementById(
-    "nameInput"
-  ).value = "";
-
-  document.getElementById(
-    "shotInput"
-  ).value = "";
-
-  document.getElementById(
-    "memberInput"
-  ).value = "";
-
-  document.getElementById(
-    "countInput"
-  ).value = "1";
-
-  document.getElementById(
-    "preview"
-  ).style.display = "none";
-
-  document.getElementById(
-    "photoText"
-  ).style.display = "block";
-
-  document.getElementById(
-    "photoText"
-  ).textContent =
-    "📸 写真を選択";
-
-  document.getElementById(
-    "editModal"
-  ).style.display = "flex";
-}
+    const currentValue = memberFilter;
 
 
-function closeEditModal() {
-
-  document.getElementById(
-    "editModal"
-  ).style.display = "none";
-}
+    select.innerHTML = "";
 
 
-/* 写真プレビュー */
+    const allOption =
+      document.createElement("option");
 
-function previewPhoto(event) {
+    allOption.value = "all";
 
-  const file =
-    event.target.files[0];
+    allOption.textContent = "全メンバー";
 
-  if (!file) {
-    return;
+    select.appendChild(allOption);
+
+
+    masters.members.forEach(member => {
+
+      const option =
+        document.createElement("option");
+
+      option.value = member;
+
+      option.textContent = member;
+
+      select.appendChild(option);
+
+    });
+
+
+    if (
+      currentValue === "all" ||
+      masters.members.includes(currentValue)
+    ) {
+
+      select.value = currentValue;
+
+    } else {
+
+      memberFilter = "all";
+
+      select.value = "all";
+
+    }
+
   }
 
-  const reader =
-    new FileReader();
 
-  reader.onload = function(e) {
+  /* =========================
+     並び替え・絞り込み
+  ========================= */
 
-    const preview =
-      document.getElementById(
-        "preview"
+  function changeSort() {
+
+    currentSort =
+      document.getElementById("sortSelect").value;
+
+    render();
+
+  }
+
+
+  function changeMemberFilter() {
+
+    memberFilter =
+      document.getElementById("memberFilter").value;
+
+    render();
+
+  }
+
+
+  function getVisibleCards() {
+
+    let result = [...cards];
+
+
+    if (memberFilter !== "all") {
+
+      result = result.filter(card => {
+
+        return (card.member || "") === memberFilter;
+
+      });
+
+    }
+
+
+    if (currentSort === "name") {
+
+      result.sort((a, b) => {
+
+        return (a.name || "").localeCompare(
+          b.name || "",
+          "ja"
+        );
+
+      });
+
+    }
+
+    else if (currentSort === "member") {
+
+      result.sort((a, b) => {
+
+        return (a.member || "").localeCompare(
+          b.member || "",
+          "ja"
+        );
+
+      });
+
+    }
+
+    else if (currentSort === "count") {
+
+      result.sort((a, b) => {
+
+        return Number(b.count || 0) -
+               Number(a.count || 0);
+
+      });
+
+    }
+
+    else {
+
+      result.sort((a, b) => {
+
+        return Number(a.id || 0) -
+               Number(b.id || 0);
+
+      });
+
+    }
+
+
+    return result;
+
+  }
+
+
+  /* =========================
+     カード検索
+  ========================= */
+
+  function findCard(id) {
+
+    return cards.find(card => {
+
+      return String(card.id) === String(id);
+
+    });
+
+  }
+
+
+  /* =========================
+     一覧表示
+  ========================= */
+
+  function render() {
+
+    const grid =
+      document.getElementById("cardGrid");
+
+
+    document.getElementById("totalCount")
+      .textContent =
+      cards.reduce(
+        (total, card) =>
+          total + Number(card.count || 0),
+        0
       );
 
-    preview.src =
-      e.target.result;
 
-    preview.style.display =
-      "block";
-
-    document.getElementById(
-      "photoText"
-    ).style.display =
-      "none";
-  };
-
-  reader.readAsDataURL(file);
-}
+    renderMemberFilter();
 
 
-/* カード保存 */
-
-function saveCard() {
-
-  const file =
-    document.getElementById(
-      "photoInput"
-    ).files[0];
-
-  const name =
-    document.getElementById(
-      "nameInput"
-    ).value || "カード";
-
-  const shot =
-    document.getElementById(
-      "shotInput"
-    ).value || "";
-
-  const member =
-    document.getElementById(
-      "memberInput"
-    ).value || "";
-
-  const count =
-    Number(
-      document.getElementById(
-        "countInput"
-      ).value
-    ) || 0;
+    grid.innerHTML = "";
 
 
-  /* 編集 */
+    const visibleCards =
+      getVisibleCards();
 
-  if (editingCardId !== null) {
 
-    const card =
-      findCard(editingCardId);
+    if (visibleCards.length === 0) {
+
+      grid.innerHTML = `
+        <div class="empty">
+          <div class="empty-icon">🃏</div>
+          <div>トレカがまだありません♡</div>
+          <div style="font-size:11px;margin-top:5px;">
+            「トレカを追加」から登録してね！
+          </div>
+        </div>
+      `;
+
+      return;
+
+    }
+
+
+    visibleCards.forEach(card => {
+
+      const wrapper =
+        document.createElement("div");
+
+      wrapper.className = "card";
+
+      wrapper.onclick = () => {
+
+        openDetailModal(card.id);
+
+      };
+
+
+      const imageWrap =
+        document.createElement("div");
+
+      imageWrap.className =
+        "card-image-wrap";
+
+
+      const image =
+        document.createElement("img");
+
+      image.className = "card-image";
+
+      image.src = card.image;
+
+      image.alt = card.name || "トレカ";
+
+
+      const badge =
+        document.createElement("div");
+
+      badge.className = "stock-badge";
+
+      badge.textContent =
+        Number(card.count || 0);
+
+
+      imageWrap.appendChild(image);
+
+      imageWrap.appendChild(badge);
+
+
+      const info =
+        document.createElement("div");
+
+      info.className = "card-info";
+
+
+      const name =
+        document.createElement("div");
+
+      name.className = "card-name";
+
+      name.textContent =
+        card.name || "未設定";
+
+
+      const detail =
+        document.createElement("div");
+
+      detail.className = "card-detail";
+
+      const member =
+        card.member || "未設定";
+
+      const costume =
+        card.costume || "未設定";
+
+      const shot =
+        card.shot || "未設定";
+
+
+      detail.textContent =
+        `${member} / ${costume} / ${shot}`;
+
+
+      info.appendChild(name);
+
+      info.appendChild(detail);
+
+
+      wrapper.appendChild(imageWrap);
+
+      wrapper.appendChild(info);
+
+
+      grid.appendChild(wrapper);
+
+    });
+
+  }
+
+
+  /* =========================
+     詳細
+  ========================= */
+
+  function openDetailModal(id) {
+
+    const card = findCard(id);
 
     if (!card) {
       return;
     }
 
-    card.name =
-      name;
 
-    card.shot =
-      shot;
-
-    card.member =
-      member;
-
-    card.count =
-      count;
+    selectedCardId = id;
 
 
-    if (file) {
+    document.getElementById("detailImage")
+      .src = card.image;
 
-      compressImage(
-        file,
-        function(compressedImage) {
 
-          card.image =
-            compressedImage;
+    document.getElementById("detailName")
+      .textContent =
+      card.name || "未設定";
 
-          if (save()) {
 
-            render();
+    document.getElementById("detailShot")
+      .textContent =
+      card.shot || "未設定";
 
-            closeEditModal();
 
-          }
+    document.getElementById("detailMember")
+      .textContent =
+      card.member || "未設定";
 
-        }
-      );
 
-    } else {
+    document.getElementById("detailCostume")
+      .textContent =
+      card.costume || "未設定";
 
-      if (save()) {
 
-        render();
+    document.getElementById("detailCount")
+      .textContent =
+      Number(card.count || 0);
 
-        closeEditModal();
 
-      }
+    document.getElementById("detailModal")
+      .classList.add("show");
+
+  }
+
+
+  function closeDetailModal() {
+
+    document.getElementById("detailModal")
+      .classList.remove("show");
+
+    selectedCardId = null;
+
+  }
+
+
+  /* =========================
+     詳細画面の枚数変更
+  ========================= */
+
+  function changeDetailCount(amount) {
+
+    if (selectedCardId === null) {
+      return;
+    }
+
+
+    const card =
+      findCard(selectedCardId);
+
+
+    if (!card) {
+      return;
+    }
+
+
+    const oldCount =
+      Number(card.count || 0);
+
+
+    const newCount =
+      Math.max(0, oldCount + amount);
+
+
+    card.count = newCount;
+
+
+    if (!save()) {
+
+      card.count = oldCount;
+
+      return;
 
     }
 
-    return;
+
+    document.getElementById("detailCount")
+      .textContent = newCount;
+
+
+    render();
+
   }
 
 
-  /* 新規追加 */
+  /* =========================
+     削除
+  ========================= */
 
-  if (!file) {
+  function deleteSelectedCard() {
 
-    alert(
-      "カード写真を選択してください📸"
-    );
+    if (selectedCardId === null) {
+      return;
+    }
 
-    return;
+
+    deleteCard(selectedCardId);
+
   }
 
 
-  compressImage(
-    file,
-    function(compressedImage) {
+  function deleteCard(id) {
 
-      cards.push({
+    const card = findCard(id);
 
-        id: Date.now(),
+    if (!card) {
+      return;
+    }
 
-        image:
-          compressedImage,
 
-        name:
-          name,
+    const ok =
+      confirm(
+        `「${card.name || "このトレカ"}」を削除しますか？`
+      );
 
-        shot:
-          shot,
 
-        member:
-          member,
+    if (!ok) {
+      return;
+    }
 
-        count:
-          count
+
+    const backup = [...cards];
+
+
+    cards =
+      cards.filter(item => {
+
+        return String(item.id) !== String(id);
 
       });
 
 
-      if (save()) {
+    if (!save()) {
 
-        render();
+      cards = backup;
 
-        closeEditModal();
+      return;
+
+    }
+
+
+    if (
+      selectedCardId !== null &&
+      String(selectedCardId) === String(id)
+    ) {
+
+      closeDetailModal();
+
+    }
+
+
+    render();
+
+  }
+
+
+  /* =========================
+     編集
+  ========================= */
+
+  function openEditModal() {
+
+    if (selectedCardId === null) {
+      return;
+    }
+
+
+    const card =
+      findCard(selectedCardId);
+
+
+    if (!card) {
+      return;
+    }
+
+
+    editingCardId = selectedCardId;
+
+
+    document.getElementById("editModalTitle")
+      .textContent =
+      "✏️ トレカを編集";
+
+
+    refreshEditSelects(
+      card.name || "",
+      card.member || "",
+      card.costume || ""
+    );
+
+
+    document.getElementById("shotInput")
+      .innerHTML = "";
+
+
+    SHOTS.forEach(shot => {
+
+      const option =
+        document.createElement("option");
+
+      option.value = shot;
+
+      option.textContent = shot;
+
+      document.getElementById("shotInput")
+        .appendChild(option);
+
+    });
+
+
+    /*
+      以前のバージョンで
+      4種類以外の写りを登録していた場合、
+      データを勝手に消さないため
+      一時的に選択肢として残します。
+    */
+
+    if (
+      card.shot &&
+      !SHOTS.includes(card.shot)
+    ) {
+
+      const legacyOption =
+        document.createElement("option");
+
+      legacyOption.value = card.shot;
+
+      legacyOption.textContent =
+        "旧データ：" + card.shot;
+
+      document.getElementById("shotInput")
+        .appendChild(legacyOption);
+
+    }
+
+
+    document.getElementById("shotInput")
+      .value =
+      card.shot || SHOTS[0];
+
+
+    document.getElementById("countInput")
+      .value =
+      Number(card.count || 0);
+
+
+    const preview =
+      document.getElementById("photoPreview");
+
+
+    if (card.image) {
+
+      preview.src = card.image;
+
+      preview.style.display = "block";
+
+    } else {
+
+      preview.style.display = "none";
+
+    }
+
+
+    document.getElementById("photoInput")
+      .value = "";
+
+
+    closeDetailModal();
+
+
+    document.getElementById("editModal")
+      .classList.add("show");
+
+  }
+
+
+  /* =========================
+     新規追加
+  ========================= */
+
+  function openAddModal() {
+
+    editingCardId = null;
+
+
+    document.getElementById("editModalTitle")
+      .textContent =
+      "🃏 トレカを追加";
+
+
+    refreshEditSelects();
+
+
+    document.getElementById("shotInput")
+      .value = "ヒキ";
+
+
+    document.getElementById("countInput")
+      .value = 1;
+
+
+    document.getElementById("photoInput")
+      .value = "";
+
+
+    const preview =
+      document.getElementById("photoPreview");
+
+    preview.src = "";
+
+    preview.style.display = "none";
+
+
+    document.getElementById("editModal")
+      .classList.add("show");
+
+  }
+
+
+  function closeEditModal() {
+
+    document.getElementById("editModal")
+      .classList.remove("show");
+
+    editingCardId = null;
+
+  }
+
+
+  /* =========================
+     写真プレビュー
+  ========================= */
+
+  function previewPhoto() {
+
+    const file =
+      document.getElementById("photoInput")
+        .files[0];
+
+
+    if (!file) {
+      return;
+    }
+
+
+    const reader =
+      new FileReader();
+
+
+    reader.onload = function(event) {
+
+      const preview =
+        document.getElementById("photoPreview");
+
+
+      preview.src =
+        event.target.result;
+
+
+      preview.style.display =
+        "block";
+
+    };
+
+
+    reader.readAsDataURL(file);
+
+  }
+
+
+  /* =========================
+     カード保存
+  ========================= */
+
+  async function saveCard() {
+
+    const name =
+      document.getElementById("nameInput").value;
+
+
+    const member =
+      document.getElementById("memberInput").value;
+
+
+    const costume =
+      document.getElementById("costumeInput").value;
+
+
+    const shot =
+      document.getElementById("shotInput").value;
+
+
+    const count =
+      Math.max(
+        0,
+        Number(
+          document.getElementById("countInput").value
+        ) || 0
+      );
+
+
+    if (!name) {
+
+      alert(
+        "カード名を選択してください🥺"
+      );
+
+      return;
+
+    }
+
+
+    if (!member) {
+
+      alert(
+        "メンバーを選択してください🥺"
+      );
+
+      return;
+
+    }
+
+
+    const file =
+      document.getElementById("photoInput")
+        .files[0];
+
+
+    /* =====================
+       編集
+    ===================== */
+
+    if (editingCardId !== null) {
+
+      const card =
+        findCard(editingCardId);
+
+
+      if (!card) {
+        return;
+      }
+
+
+      const backup = {
+        name: card.name,
+        member: card.member,
+        costume: card.costume,
+        shot: card.shot,
+        count: card.count,
+        image: card.image
+      };
+
+
+      card.name = name;
+
+      card.member = member;
+
+      card.costume = costume;
+
+      card.shot = shot;
+
+      card.count = count;
+
+
+      if (file) {
+
+        try {
+
+          card.image =
+            await compressImage(file);
+
+        } catch (error) {
+
+          alert(
+            "写真の処理に失敗しました😭"
+          );
+
+          card.name = backup.name;
+          card.member = backup.member;
+          card.costume = backup.costume;
+          card.shot = backup.shot;
+          card.count = backup.count;
+          card.image = backup.image;
+
+          return;
+
+        }
 
       }
 
+
+      if (!save()) {
+
+        card.name = backup.name;
+        card.member = backup.member;
+        card.costume = backup.costume;
+        card.shot = backup.shot;
+        card.count = backup.count;
+        card.image = backup.image;
+
+        return;
+
+      }
+
+
+      closeEditModal();
+
+      render();
+
+      return;
+
     }
-  );
-}
 
 
-/* 画像圧縮 */
+    /* =====================
+       新規追加
+    ===================== */
 
-function compressImage(
-  file,
-  callback
-) {
+    if (!file) {
 
-  const reader =
-    new FileReader();
+      alert(
+        "トレカの写真を選択してください📷"
+      );
 
-  reader.onload =
-    function(e) {
+      return;
 
-      const img =
-        new Image();
+    }
 
-      img.onload =
-        function() {
 
-          const maxSize =
-            800;
+    let image;
+
+    try {
+
+      image =
+        await compressImage(file);
+
+    } catch (error) {
+
+      alert(
+        "写真の処理に失敗しました😭"
+      );
+
+      return;
+
+    }
+
+
+    const newCard = {
+
+      id:
+        Date.now(),
+
+      image:
+        image,
+
+      name:
+        name,
+
+      member:
+        member,
+
+      costume:
+        costume,
+
+      shot:
+        shot,
+
+      count:
+        count
+
+    };
+
+
+    cards.push(newCard);
+
+
+    if (!save()) {
+
+      cards.pop();
+
+      return;
+
+    }
+
+
+    closeEditModal();
+
+    render();
+
+  }
+
+
+  /* =========================
+     写真圧縮
+  ========================= */
+
+  function compressImage(file) {
+
+    return new Promise((resolve, reject) => {
+
+      const reader =
+        new FileReader();
+
+
+      reader.onload = function(event) {
+
+        const img =
+          new Image();
+
+
+        img.onload = function() {
+
+          const maxSize = 800;
+
 
           let width =
             img.width;
@@ -1278,13 +2147,12 @@ function compressImage(
             height > maxSize
           ) {
 
-            if (
-              width > height
-            ) {
+            if (width > height) {
 
               height =
-                height *
-                (maxSize / width);
+                Math.round(
+                  height * maxSize / width
+                );
 
               width =
                 maxSize;
@@ -1292,8 +2160,9 @@ function compressImage(
             } else {
 
               width =
-                width *
-                (maxSize / height);
+                Math.round(
+                  width * maxSize / height
+                );
 
               height =
                 maxSize;
@@ -1304,9 +2173,8 @@ function compressImage(
 
 
           const canvas =
-            document.createElement(
-              "canvas"
-            );
+            document.createElement("canvas");
+
 
           canvas.width =
             width;
@@ -1316,9 +2184,8 @@ function compressImage(
 
 
           const ctx =
-            canvas.getContext(
-              "2d"
-            );
+            canvas.getContext("2d");
+
 
           ctx.drawImage(
             img,
@@ -1329,52 +2196,46 @@ function compressImage(
           );
 
 
-          const compressedImage =
+          const compressed =
             canvas.toDataURL(
               "image/jpeg",
               0.7
             );
 
 
-          callback(
-            compressedImage
-          );
+          resolve(compressed);
 
         };
 
 
-      img.src =
-        e.target.result;
-
-    };
+        img.onerror =
+          reject;
 
 
-  reader.readAsDataURL(file);
-}
+        img.src =
+          event.target.result;
+
+      };
 
 
-/* HTML安全処理 */
-
-function escapeHtml(text) {
-
-  const div =
-    document.createElement(
-      "div"
-    );
-
-  div.textContent =
-    text;
-
-  return div.innerHTML;
-}
+      reader.onerror =
+        reject;
 
 
-render();
+      reader.readAsDataURL(file);
+
+    });
+
+  }
+
+
+  /* =========================
+     初期表示
+  ========================= */
+
+  render();
 
 </script>
 
 </body>
 </html>
-
-
-
