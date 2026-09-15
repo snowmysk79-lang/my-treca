@@ -77,12 +77,44 @@ button {
   color: white;
   font-size: 15px;
   font-weight: 700;
-  margin-bottom: 20px;
+  margin-bottom: 14px;
 }
 
 .add-button:active {
   transform: scale(0.98);
 }
+
+/* 並び替え */
+
+.sort-area {
+  background: white;
+  padding: 12px 14px;
+  border-radius: 14px;
+  margin-bottom: 18px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.04);
+}
+
+.sort-title {
+  font-size: 12px;
+  color: #777;
+  margin-bottom: 6px;
+}
+
+.sort-select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #dce7e5;
+  border-radius: 10px;
+  background: white;
+  font-size: 14px;
+  outline: none;
+}
+
+.sort-select:focus {
+  border-color: #f3a6bd;
+}
+
+/* カード一覧 */
 
 .grid {
   display: grid;
@@ -280,6 +312,8 @@ button {
   background: #eee;
 }
 
+/* 入力 */
+
 label {
   display: block;
   font-size: 12px;
@@ -377,6 +411,38 @@ input:focus {
     ＋ トレカを追加
   </button>
 
+  <div class="sort-area">
+
+    <div class="sort-title">
+      並び替え
+    </div>
+
+    <select
+      id="sortSelect"
+      class="sort-select"
+      onchange="changeSort()"
+    >
+
+      <option value="registered">
+        登録順
+      </option>
+
+      <option value="name">
+        名前順
+      </option>
+
+      <option value="member">
+        メンバー順
+      </option>
+
+      <option value="count">
+        所持枚数が多い順
+      </option>
+
+    </select>
+
+  </div>
+
   <div id="cardGrid" class="grid"></div>
 
   <div id="empty" class="empty">
@@ -404,17 +470,33 @@ input:focus {
     <div id="detailMember" class="detail-member"></div>
 
     <div class="detail-stock">
-      <div id="detailStock" class="detail-stock-number">0</div>
-      <div class="detail-stock-label">所持枚数</div>
+
+      <div
+        id="detailStock"
+        class="detail-stock-number"
+      >
+        0
+      </div>
+
+      <div class="detail-stock-label">
+        所持枚数
+      </div>
+
     </div>
 
     <div class="detail-buttons">
 
-      <button class="close-button" onclick="closeDetailModal()">
+      <button
+        class="close-button"
+        onclick="closeDetailModal()"
+      >
         閉じる
       </button>
 
-      <button class="edit-button" onclick="openEditModal()">
+      <button
+        class="edit-button"
+        onclick="openEditModal()"
+      >
         ✏️ 編集
       </button>
 
@@ -431,13 +513,17 @@ input:focus {
 
   <div class="modal">
 
-    <h2 id="editTitle">🃏 トレカを追加</h2>
+    <h2 id="editTitle">
+      🃏 トレカを追加
+    </h2>
 
     <label>カード写真</label>
 
     <label class="photo-label">
 
-      <span id="photoText">📸 写真を選択</span>
+      <span id="photoText">
+        📸 写真を選択
+      </span>
 
       <input
         type="file"
@@ -448,27 +534,54 @@ input:focus {
 
     </label>
 
-    <img id="preview" class="preview">
+    <img
+      id="preview"
+      class="preview"
+    >
 
     <label>カード名</label>
-    <input id="nameInput" placeholder="例：A-001">
+
+    <input
+      id="nameInput"
+      placeholder="例：A-001"
+    >
 
     <label>写り</label>
-    <input id="shotInput" placeholder="例：アップ">
+
+    <input
+      id="shotInput"
+      placeholder="例：アップ"
+    >
 
     <label>メンバー</label>
-    <input id="memberInput" placeholder="例：○○くん">
+
+    <input
+      id="memberInput"
+      placeholder="例：○○くん"
+    >
 
     <label>所持枚数</label>
-    <input id="countInput" type="number" min="0" value="1">
+
+    <input
+      id="countInput"
+      type="number"
+      min="0"
+      value="1"
+    >
 
     <div class="modal-buttons">
 
-      <button class="cancel" onclick="closeEditModal()">
+      <button
+        class="cancel"
+        onclick="closeEditModal()"
+      >
         キャンセル
       </button>
 
-      <button class="save" onclick="saveCard()">
+      <button
+        class="save"
+        onclick="saveCard()"
+      >
         保存する
       </button>
 
@@ -481,13 +594,17 @@ input:focus {
 
 <script>
 
+/* データ */
+
 let cards = JSON.parse(
   localStorage.getItem("myTrecaCards") || "[]"
 );
 
-let selectedCardIndex = null;
+let selectedCardId = null;
 
-let editingIndex = null;
+let editingCardId = null;
+
+let currentSort = "registered";
 
 
 /* 保存 */
@@ -515,6 +632,67 @@ function save() {
 }
 
 
+/* 並び替え */
+
+function changeSort() {
+
+  currentSort =
+    document.getElementById(
+      "sortSelect"
+    ).value;
+
+  render();
+}
+
+
+function getSortedCards() {
+
+  const sorted = [...cards];
+
+  if (currentSort === "name") {
+
+    sorted.sort(function(a, b) {
+
+      return (a.name || "").localeCompare(
+        b.name || "",
+        "ja"
+      );
+
+    });
+
+  } else if (currentSort === "member") {
+
+    sorted.sort(function(a, b) {
+
+      return (a.member || "").localeCompare(
+        b.member || "",
+        "ja"
+      );
+
+    });
+
+  } else if (currentSort === "count") {
+
+    sorted.sort(function(a, b) {
+
+      return Number(b.count) - Number(a.count);
+
+    });
+
+  } else {
+
+    sorted.sort(function(a, b) {
+
+      return Number(a.id) - Number(b.id);
+
+    });
+
+  }
+
+  return sorted;
+}
+
+
 /* 一覧表示 */
 
 function render() {
@@ -539,18 +717,31 @@ function render() {
 
   let total = 0;
 
-  cards.forEach((card, index) => {
+  cards.forEach(function(card) {
 
     total += Number(card.count);
+
+  });
+
+
+  const sortedCards =
+    getSortedCards();
+
+
+  sortedCards.forEach(function(card) {
 
     const div =
       document.createElement("div");
 
     div.className = "card";
 
+
     div.onclick = function() {
-      openDetailModal(index);
+
+      openDetailModal(card.id);
+
     };
+
 
     div.innerHTML = `
 
@@ -581,7 +772,10 @@ function render() {
         <div class="counter">
 
           <button
-            onclick="event.stopPropagation(); changeCount(${index}, -1)"
+            onclick="
+              event.stopPropagation();
+              changeCount('${card.id}', -1);
+            "
           >
             −
           </button>
@@ -591,7 +785,10 @@ function render() {
           </span>
 
           <button
-            onclick="event.stopPropagation(); changeCount(${index}, 1)"
+            onclick="
+              event.stopPropagation();
+              changeCount('${card.id}', 1);
+            "
           >
             ＋
           </button>
@@ -600,7 +797,10 @@ function render() {
 
         <button
           class="delete"
-          onclick="event.stopPropagation(); deleteCard(${index})"
+          onclick="
+            event.stopPropagation();
+            deleteCard('${card.id}');
+          "
         >
           削除
         </button>
@@ -613,78 +813,128 @@ function render() {
 
   });
 
-  document.getElementById("totalCount").textContent = total;
+
+  document.getElementById(
+    "totalCount"
+  ).textContent = total;
+}
+
+
+/* IDからカードを探す */
+
+function findCard(id) {
+
+  return cards.find(function(card) {
+
+    return String(card.id) === String(id);
+
+  });
+
 }
 
 
 /* 枚数変更 */
 
-function changeCount(index, amount) {
+function changeCount(id, amount) {
 
-  cards[index].count = Math.max(
+  const card =
+    findCard(id);
+
+  if (!card) {
+    return;
+  }
+
+  card.count = Math.max(
     0,
-    Number(cards[index].count) + amount
+    Number(card.count) + amount
   );
 
   save();
 
   render();
-
 }
 
 
 /* 削除 */
 
-function deleteCard(index) {
+function deleteCard(id) {
+
+  const card =
+    findCard(id);
+
+  if (!card) {
+    return;
+  }
 
   if (
-    !confirm("このトレカを削除しますか？")
+    !confirm(
+      "このトレカを削除しますか？"
+    )
   ) {
     return;
   }
 
-  cards.splice(index, 1);
+  cards =
+    cards.filter(function(item) {
+
+      return String(item.id) !== String(id);
+
+    });
 
   save();
 
   render();
-
 }
 
 
 /* 詳細画面 */
 
-function openDetailModal(index) {
+function openDetailModal(id) {
 
-  selectedCardIndex = index;
+  const card =
+    findCard(id);
 
-  const card = cards[index];
+  if (!card) {
+    return;
+  }
 
-  document.getElementById("detailImage").src =
-    card.image;
+  selectedCardId =
+    card.id;
 
-  document.getElementById("detailName").textContent =
-    card.name;
+  document.getElementById(
+    "detailImage"
+  ).src = card.image;
 
-  document.getElementById("detailShot").textContent =
+  document.getElementById(
+    "detailName"
+  ).textContent = card.name;
+
+  document.getElementById(
+    "detailShot"
+  ).textContent =
     card.shot || "";
 
-  document.getElementById("detailMember").textContent =
+  document.getElementById(
+    "detailMember"
+  ).textContent =
     card.member || "";
 
-  document.getElementById("detailStock").textContent =
+  document.getElementById(
+    "detailStock"
+  ).textContent =
     card.count;
 
-  document.getElementById("detailModal").style.display =
-    "flex";
+  document.getElementById(
+    "detailModal"
+  ).style.display = "flex";
 }
 
 
 function closeDetailModal() {
 
-  document.getElementById("detailModal").style.display =
-    "none";
-
+  document.getElementById(
+    "detailModal"
+  ).style.display = "none";
 }
 
 
@@ -692,87 +942,125 @@ function closeDetailModal() {
 
 function openEditModal() {
 
-  if (selectedCardIndex === null) {
+  if (selectedCardId === null) {
     return;
   }
 
   const card =
-    cards[selectedCardIndex];
+    findCard(selectedCardId);
 
-  editingIndex =
-    selectedCardIndex;
+  if (!card) {
+    return;
+  }
 
-  document.getElementById("editTitle").textContent =
+  editingCardId =
+    card.id;
+
+  document.getElementById(
+    "editTitle"
+  ).textContent =
     "✏️ トレカを編集";
 
-  document.getElementById("nameInput").value =
+  document.getElementById(
+    "nameInput"
+  ).value =
     card.name || "";
 
-  document.getElementById("shotInput").value =
+  document.getElementById(
+    "shotInput"
+  ).value =
     card.shot || "";
 
-  document.getElementById("memberInput").value =
+  document.getElementById(
+    "memberInput"
+  ).value =
     card.member || "";
 
-  document.getElementById("countInput").value =
+  document.getElementById(
+    "countInput"
+  ).value =
     card.count;
 
-  document.getElementById("photoInput").value =
-    "";
+  document.getElementById(
+    "photoInput"
+  ).value = "";
 
-  document.getElementById("preview").style.display =
-    "none";
+  document.getElementById(
+    "preview"
+  ).style.display = "none";
 
-  document.getElementById("photoText").textContent =
+  document.getElementById(
+    "photoText"
+  ).style.display = "block";
+
+  document.getElementById(
+    "photoText"
+  ).textContent =
     "📸 写真を変更する場合は選択";
 
   closeDetailModal();
 
-  document.getElementById("editModal").style.display =
-    "flex";
+  document.getElementById(
+    "editModal"
+  ).style.display = "flex";
 }
 
 
-/* 追加画面 */
+/* 新規追加画面 */
 
 function openAddModal() {
 
-  editingIndex = null;
+  editingCardId = null;
 
-  document.getElementById("editTitle").textContent =
+  document.getElementById(
+    "editTitle"
+  ).textContent =
     "🃏 トレカを追加";
 
-  document.getElementById("photoInput").value =
-    "";
+  document.getElementById(
+    "photoInput"
+  ).value = "";
 
-  document.getElementById("nameInput").value =
-    "";
+  document.getElementById(
+    "nameInput"
+  ).value = "";
 
-  document.getElementById("shotInput").value =
-    "";
+  document.getElementById(
+    "shotInput"
+  ).value = "";
 
-  document.getElementById("memberInput").value =
-    "";
+  document.getElementById(
+    "memberInput"
+  ).value = "";
 
-  document.getElementById("countInput").value =
-    "1";
+  document.getElementById(
+    "countInput"
+  ).value = "1";
 
-  document.getElementById("preview").style.display =
-    "none";
+  document.getElementById(
+    "preview"
+  ).style.display = "none";
 
-  document.getElementById("photoText").textContent =
+  document.getElementById(
+    "photoText"
+  ).style.display = "block";
+
+  document.getElementById(
+    "photoText"
+  ).textContent =
     "📸 写真を選択";
 
-  document.getElementById("editModal").style.display =
-    "flex";
+  document.getElementById(
+    "editModal"
+  ).style.display = "flex";
 }
 
 
 function closeEditModal() {
 
-  document.getElementById("editModal").style.display =
-    "none";
-
+  document.getElementById(
+    "editModal"
+  ).style.display = "none";
 }
 
 
@@ -793,7 +1081,9 @@ function previewPhoto(event) {
   reader.onload = function(e) {
 
     const preview =
-      document.getElementById("preview");
+      document.getElementById(
+        "preview"
+      );
 
     preview.src =
       e.target.result;
@@ -801,7 +1091,9 @@ function previewPhoto(event) {
     preview.style.display =
       "block";
 
-    document.getElementById("photoText").style.display =
+    document.getElementById(
+      "photoText"
+    ).style.display =
       "none";
   };
 
@@ -809,37 +1101,48 @@ function previewPhoto(event) {
 }
 
 
-/* 保存 */
+/* カード保存 */
 
 function saveCard() {
 
   const file =
-    document.getElementById("photoInput").files[0];
+    document.getElementById(
+      "photoInput"
+    ).files[0];
 
   const name =
-    document.getElementById("nameInput").value ||
-    "カード";
+    document.getElementById(
+      "nameInput"
+    ).value || "カード";
 
   const shot =
-    document.getElementById("shotInput").value ||
-    "";
+    document.getElementById(
+      "shotInput"
+    ).value || "";
 
   const member =
-    document.getElementById("memberInput").value ||
-    "";
+    document.getElementById(
+      "memberInput"
+    ).value || "";
 
   const count =
     Number(
-      document.getElementById("countInput").value
+      document.getElementById(
+        "countInput"
+      ).value
     ) || 0;
 
 
-  /* 編集の場合 */
+  /* 編集 */
 
-  if (editingIndex !== null) {
+  if (editingCardId !== null) {
 
     const card =
-      cards[editingIndex];
+      findCard(editingCardId);
+
+    if (!card) {
+      return;
+    }
 
     card.name =
       name;
@@ -853,8 +1156,6 @@ function saveCard() {
     card.count =
       count;
 
-
-    /* 写真を変更した場合だけ更新 */
 
     if (file) {
 
@@ -903,6 +1204,7 @@ function saveCard() {
     return;
   }
 
+
   compressImage(
     file,
     function(compressedImage) {
@@ -911,17 +1213,23 @@ function saveCard() {
 
         id: Date.now(),
 
-        image: compressedImage,
+        image:
+          compressedImage,
 
-        name: name,
+        name:
+          name,
 
-        shot: shot,
+        shot:
+          shot,
 
-        member: member,
+        member:
+          member,
 
-        count: count
+        count:
+          count
 
       });
+
 
       if (save()) {
 
@@ -938,85 +1246,108 @@ function saveCard() {
 
 /* 画像圧縮 */
 
-function compressImage(file, callback) {
+function compressImage(
+  file,
+  callback
+) {
 
   const reader =
     new FileReader();
 
-  reader.onload = function(e) {
+  reader.onload =
+    function(e) {
 
-    const img =
-      new Image();
+      const img =
+        new Image();
 
-    img.onload = function() {
+      img.onload =
+        function() {
 
-      const maxSize = 800;
+          const maxSize =
+            800;
 
-      let width =
-        img.width;
+          let width =
+            img.width;
 
-      let height =
-        img.height;
+          let height =
+            img.height;
 
-      if (
-        width > maxSize ||
-        height > maxSize
-      ) {
 
-        if (width > height) {
+          if (
+            width > maxSize ||
+            height > maxSize
+          ) {
 
-          height =
-            height * (maxSize / width);
+            if (
+              width > height
+            ) {
 
-          width =
-            maxSize;
+              height =
+                height *
+                (maxSize / width);
 
-        } else {
+              width =
+                maxSize;
 
-          width =
-            width * (maxSize / height);
+            } else {
 
-          height =
-            maxSize;
+              width =
+                width *
+                (maxSize / height);
 
-        }
+              height =
+                maxSize;
 
-      }
+            }
 
-      const canvas =
-        document.createElement("canvas");
+          }
 
-      canvas.width =
-        width;
 
-      canvas.height =
-        height;
+          const canvas =
+            document.createElement(
+              "canvas"
+            );
 
-      const ctx =
-        canvas.getContext("2d");
+          canvas.width =
+            width;
 
-      ctx.drawImage(
-        img,
-        0,
-        0,
-        width,
-        height
-      );
+          canvas.height =
+            height;
 
-      const compressedImage =
-        canvas.toDataURL(
-          "image/jpeg",
-          0.7
-        );
 
-      callback(compressedImage);
+          const ctx =
+            canvas.getContext(
+              "2d"
+            );
+
+          ctx.drawImage(
+            img,
+            0,
+            0,
+            width,
+            height
+          );
+
+
+          const compressedImage =
+            canvas.toDataURL(
+              "image/jpeg",
+              0.7
+            );
+
+
+          callback(
+            compressedImage
+          );
+
+        };
+
+
+      img.src =
+        e.target.result;
 
     };
 
-    img.src =
-      e.target.result;
-
-  };
 
   reader.readAsDataURL(file);
 }
@@ -1027,7 +1358,9 @@ function compressImage(file, callback) {
 function escapeHtml(text) {
 
   const div =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
   div.textContent =
     text;
