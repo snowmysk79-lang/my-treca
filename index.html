@@ -108,6 +108,10 @@ button {
   height: 100%;
   object-fit: cover;
   display: block;
+  -webkit-user-drag: none;
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: none;
 }
 
 .stock {
@@ -281,6 +285,13 @@ input:focus {
     grid-template-columns: repeat(4, 1fr);
   }
 }
+
+.dragging {
+  opacity: 0.5;
+  transform: scale(1.05);
+  touch-action: none;
+}
+  
 </style>
 </head>
 
@@ -392,7 +403,8 @@ function render() {
 
     const div = document.createElement("div");
     div.className = "card";
-
+    div.draggable = editMode;
+    div.dataset.id = card.id;
     div.innerHTML = `
       <div class="image-wrap">
         <img src="${card.image}">
@@ -576,6 +588,112 @@ function toggleEditMode() {
 
   render();
 }
+
+function enableReorder() {
+  const grid = document.getElementById("cardGrid");
+  if (!editMode) return;
+
+  let draggedCard = null;
+  let longPressTimer = null;
+  let pointerId = null;
+
+  grid.querySelectorAll(".card").forEach(card => {
+
+    card.addEventListener("pointerdown", function(e) {
+
+      pointerId = e.pointerId;
+
+      longPressTimer = setTimeout(() => {
+        draggedCard = card;
+        draggedCard.classList.add("dragging");
+
+        try {
+          draggedCard.setPointerCapture(pointerId);
+        } catch (error) {}
+
+      }, 400);
+
+    });
+
+    card.addEventListener("pointermove", function(e) {
+
+      if (!draggedCard) return;
+
+      e.preventDefault();
+
+      const target = document.elementFromPoint(
+        e.clientX,
+        e.clientY
+      );
+
+      const targetCard = target
+        ? target.closest(".card")
+        : null;
+
+      if (!targetCard || targetCard === draggedCard) return;
+
+      const cardsOnScreen = [
+        ...grid.querySelectorAll(".card")
+      ];
+
+      const targetIndex = cardsOnScreen.indexOf(targetCard);
+      const draggedIndex = cardsOnScreen.indexOf(draggedCard);
+
+      if (targetIndex === -1 || draggedIndex === -1) return;
+
+      if (draggedIndex < targetIndex) {
+        grid.insertBefore(
+          draggedCard,
+          targetCard.nextSibling
+        );
+      } else {
+        grid.insertBefore(
+          draggedCard,
+          targetCard
+        );
+      }
+
+    });
+
+    card.addEventListener("pointerup", function() {
+
+      clearTimeout(longPressTimer);
+
+      if (!draggedCard) return;
+
+      draggedCard.classList.remove("dragging");
+
+      const ids = [
+        ...grid.querySelectorAll(".card")
+      ].map(card => Number(card.dataset.id));
+
+      cards.sort((a, b) => {
+        return ids.indexOf(a.id) - ids.indexOf(b.id);
+      });
+
+      save();
+
+      draggedCard = null;
+      pointerId = null;
+
+    });
+
+    card.addEventListener("pointercancel", function() {
+
+      clearTimeout(longPressTimer);
+
+      if (draggedCard) {
+        draggedCard.classList.remove("dragging");
+      }
+
+      draggedCard = null;
+      pointerId = null;
+
+    });
+
+  });
+}
+
 function escapeHtml(text) {
 
   const div = document.createElement("div");
@@ -585,6 +703,7 @@ function escapeHtml(text) {
 }
 
 render();
+enableReorder();
 
 </script>
 
