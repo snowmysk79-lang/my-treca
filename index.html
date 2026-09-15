@@ -1456,7 +1456,7 @@
       name.className = "card-name";
 
       name.textContent =
-        card.name || "未設定";
+        card.costume || "未設定";
 
 
       const detail =
@@ -1467,15 +1467,12 @@
       const member =
         card.member || "未設定";
 
-      const costume =
-        card.costume || "未設定";
-
       const shot =
         card.shot || "未設定";
 
 
       detail.textContent =
-        `${member} / ${costume} / ${shot}`;
+        `${shot} / ${member} / ${card.name||"未設定"}`;
 
 
       info.appendChild(name);
