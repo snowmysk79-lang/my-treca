@@ -1297,6 +1297,27 @@
       });
 
     }
+else if (currentSort === "costume") {
+
+  result.sort((a, b) => {
+
+    const indexA =
+      masters.costumes.indexOf(a.costume);
+
+    const indexB =
+      masters.costumes.indexOf(b.costume);
+
+    const orderA =
+      indexA === -1 ? 9999 : indexA;
+
+    const orderB =
+      indexB === -1 ? 9999 : indexB;
+
+    return orderA - orderB;
+
+  });
+
+}
 
     else if (currentSort === "member") {
 
