@@ -331,6 +331,9 @@ input:focus {
     <label>カード名</label>
     <input id="nameInput" placeholder="例：A-001">
 
+    <label>写り</label>
+    <input id="nameInput" placeholder="例：A-001">
+    
     <label>メンバー</label>
     <input id="memberInput" placeholder="例：○○くん">
 
@@ -350,7 +353,13 @@ input:focus {
 let cards = JSON.parse(localStorage.getItem("myTrecaCards") || "[]");
 
 function save() {
-  localStorage.setItem("myTrecaCards", JSON.stringify(cards));
+  try {
+    localStorage.setItem("myTrecaCards", JSON.stringify(cards));
+    return true;
+  } catch (error) {
+    alert("保存できませんでした😭\n" + error.message);
+    return false;
+  }
 }
 
 function render() {
