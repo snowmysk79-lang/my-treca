@@ -294,7 +294,16 @@ input:focus {
 </header>
 
 <main class="container">
-
+  
+<div style="display:flex; gap:8px; margin-bottom:20px;">
+  <button class="add-button" style="margin-bottom:0;" onclick="toggleEditMode()">
+    ✏️ 編集
+  </button>
+  <button id="doneButton" class="add-button" style="margin-bottom:0; display:none;" onclick="toggleEditMode()">
+    ✅ 完了
+  </button>
+</div>
+  
   <div class="summary">
     <div class="summary-number" id="totalCount">0</div>
     <div class="summary-label">現在のトレカ総数</div>
@@ -554,7 +563,19 @@ function addCard() {
   reader.readAsDataURL(file);
 }
 
+let editMode = false;
 
+function toggleEditMode() {
+  editMode = !editMode;
+
+  document.getElementById("doneButton").style.display =
+    editMode ? "block" : "none";
+
+  document.querySelector(".add-button").style.display =
+    editMode ? "none" : "block";
+
+  render();
+}
 function escapeHtml(text) {
 
   const div = document.createElement("div");
